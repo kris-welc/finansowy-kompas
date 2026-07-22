@@ -1,41 +1,39 @@
-# Kalkulator klasy społecznej i siły nabywczej
+# Finansowy Kompas
 
-Samodzielna, lokalna strona HTML (bez backendu) do oszacowania:
+Sprawdź swoją **pozycję dochodową**, **siłę nabywczą** i **majątek netto** na tle polskich gospodarstw — w minutę, bez konta i bez wysyłania danych.
 
-- **klasy dochodowej** gospodarstwa (metoda PIE / EHDI),
-- **percentyla** dochodów w Polsce,
-- **siły nabywczej** w dolarach międzynarodowych (PPP),
-- opcjonalnie **klasy majątkowej** (nieruchomości + oszczędności − kredyty).
+**Live:** https://kris-welc.github.io/kalkulator-klasy-spolecznej/
 
-## Bezpieczeństwo
+## Co robi
 
-To jeden plik `index.html`. Wszystkie obliczenia dzieją się w przeglądarce. Strona:
+- szacuje klasę dochodową (metodologia PIE / EHDI),
+- pokazuje percentyl dochodów w Polsce,
+- przelicza siłę nabywczą na dolary PPP,
+- opcjonalnie ocenia klasę majątkową (nieruchomości + oszczędności − kredyty).
 
-- nie ma serwera ani API,
-- nie ładuje skryptów zewnętrznych / CDN,
-- nie używa cookies, `localStorage` ani analityki,
-- nigdzie nie wysyła wpisanych danych.
+## Prywatność
 
-Możesz to sprawdzić w DevTools → Network (poza samym załadowaniem HTML nie powinno być żadnych requestów) albo przeglądając kod źródłowy.
+Jeden statyczny plik HTML. Wyliczenia działają lokalnie w przeglądarce.
 
-## Relacja do raportu Deutsche Bank / rp.pl
+- brak backendu i kont,
+- brak cookies / localStorage / analityki dla danych finansowych,
+- dane o pensjach i majątku nigdzie nie wychodzą,
+- jedyny opcjonalny request: publiczna liczba gwiazdek z GitHub API.
 
-**Nie.** To nie jest ranking miast ani implementacja raportu DB „Mapping the World's Prices” 2026.
+Jeśli narzędzie Ci się podoba — zostaw ★ na GitHubie.
 
-Z tego raportu kalkulator bierze **tylko jedną liczbę porównawczą**: przeciętną pensję netto w Warszawie (~$2221/mies.). Reszta to:
+## Metodologia (skrót)
 
 | Element | Źródło |
 |---|---|
 | Klasa dochodowa (EHDI) | Polski Instytut Ekonomiczny |
 | Mediana dochodu | GUS 2025 |
 | PPP | Bank Światowy |
-| Rozkład majątku | NBP/GUS BZGD 2016 (indeksacja własna do 2025) |
-| Porównanie z Warszawą | Deutsche Bank 2026 (jedna liczba) |
+| Majątek | NBP/GUS BZGD 2016 (indeksacja do 2025) |
+| Porównanie z Warszawą | Deutsche Bank 2026 — tylko jedna liczba (pensja netto) |
+
+To **nie** jest ranking miast ani kopia raportu DB/rp.pl.
 
 ## Uruchomienie lokalne
 
-Otwórz `index.html` w przeglądarce (podwójne kliknięcie albo `open index.html`).
-
-## Live
-
-https://kris-welc.github.io/kalkulator-klasy-spolecznej/
+Otwórz `index.html` w przeglądarce.
