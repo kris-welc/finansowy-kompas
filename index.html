@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kalkulator klasy społecznej i siły nabywczej</title>
+<style>
+  :root {
+    --bg: #0f1117; --card: #181b24; --card2: #1e222e; --border: #2a2f3e;
+    --text: #e8eaf0; --muted: #8b92a5; --accent: #5b8def; --green: #4ade80;
+    --yellow: #facc15; --orange: #fb923c; --red: #f87171; --purple: #a78bfa;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg); color: var(--text); min-height: 100vh; padding: 24px 16px;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+  h1 { font-size: 22px; margin-bottom: 4px; }
+  .subtitle { color: var(--muted); font-size: 13px; margin-bottom: 24px; }
+  .privacy {
+    background: #14321f; border: 1px solid #1e5732; color: #7ee2a0;
+    padding: 10px 14px; border-radius: 8px; font-size: 12.5px; margin-bottom: 20px;
+  }
+  .card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 20px; margin-bottom: 16px;
+  }
+  .card h2 { font-size: 15px; margin-bottom: 14px; color: var(--accent); }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 560px) { .grid { grid-template-columns: 1fr; } }
+  label { display: block; font-size: 12.5px; color: var(--muted); margin-bottom: 5px; }
+  input[type="number"] {
+    width: 100%; padding: 10px 12px; background: var(--card2); color: var(--text);
+    border: 1px solid var(--border); border-radius: 8px; font-size: 15px;
+  }
+  input[type="number"]:focus { outline: none; border-color: var(--accent); }
+  .checkbox-row { display: flex; align-items: center; gap: 8px; margin-top: 12px; font-size: 13px; }
+  .checkbox-row input { accent-color: var(--accent); width: 16px; height: 16px; }
+  .result-class {
+    font-size: 26px; font-weight: 700; margin: 6px 0 2px;
+  }
+  .result-sub { color: var(--muted); font-size: 13px; margin-bottom: 14px; }
+  .bar-wrap { position: relative; height: 34px; border-radius: 8px; overflow: hidden; display: flex; margin: 10px 0 4px; }
+  .bar-seg { height: 100%; display: flex; align-items: center; justify-content: center; font-size: 10.5px; color: rgba(255,255,255,.85); font-weight: 600; }
+  .bar-marker {
+    position: absolute; top: -2px; bottom: -2px; width: 3px; background: #fff;
+    border-radius: 2px; box-shadow: 0 0 6px rgba(255,255,255,.8); transition: left .3s;
+  }
+  .bar-labels { display: flex; justify-content: space-between; font-size: 10.5px; color: var(--muted); margin-bottom: 8px; }
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-top: 14px; }
+  .stat { background: var(--card2); border-radius: 8px; padding: 12px; }
+  .stat .v { font-size: 19px; font-weight: 700; }
+  .stat .l { font-size: 11px; color: var(--muted); margin-top: 3px; line-height: 1.35; }
+  .compare-row { display: flex; align-items: center; gap: 10px; margin: 8px 0; font-size: 12.5px; }
+  .compare-row .name { width: 190px; flex-shrink: 0; color: var(--muted); }
+  .compare-row .track { flex: 1; height: 14px; background: var(--card2); border-radius: 7px; overflow: hidden; }
+  .compare-row .fill { height: 100%; border-radius: 7px; transition: width .3s; }
+  .compare-row .val { width: 90px; text-align: right; font-variant-numeric: tabular-nums; }
+  details { margin-bottom: 16px; }
+  summary { cursor: pointer; font-size: 13.5px; color: var(--accent); padding: 8px 0; }
+  .assumption-grid { display: grid; grid-template-columns: 1fr 130px; gap: 8px 12px; align-items: center; margin-top: 10px; }
+  .assumption-grid label { margin: 0; }
+  .assumption-grid input { padding: 7px 10px; font-size: 13.5px; }
+  .sources { font-size: 11.5px; color: var(--muted); line-height: 1.7; }
+  .sources a { color: var(--accent); text-decoration: none; }
+  .footnote { font-size: 11px; color: var(--muted); line-height: 1.6; margin-top: 10px; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Klasa społeczna i siła nabywcza</h1>
+  <div class="subtitle">Metodologia PIE (EHDI) &middot; dane referencyjne: GUS 2025, Bank Światowy, NBP &middot; jedna liczba porównawcza z Deutsche Bank 2026</div>
+  <div class="privacy">
+    <strong>Co to robi:</strong> na podstawie pensji brutto i składu gospodarstwa domowego szacuje Twoją klasę dochodową (metoda PIE/EHDI), percentyl w Polsce i siłę nabywczą w dolarach PPP; opcjonalnie klasę majątkową na tle rozkładu majątku NBP.<br><br>
+    <strong>Bezpieczeństwo:</strong> to jeden statyczny plik HTML bez backendu, bez CDN i bez skryptów zewnętrznych. Wszystko liczy się lokalnie w Twojej przeglądarce — strona nie wykonuje żadnych zapytań sieciowych, niczego nie zapisuje (brak cookies, localStorage, analityki) i nigdzie nie wysyła wpisanych danych. Możesz to zweryfikować w zakładce Network narzędzi deweloperskich albo w kodzie źródłowym strony.<br><br>
+    <strong>Relacja do raportu Deutsche Bank / rp.pl:</strong> kalkulator <em>nie jest</em> rankingiem miast ani kopią raportu DB. Z raportu „Mapping the World's Prices” 2026 bierze wyłącznie jedną liczbę porównawczą: przeciętną pensję netto w Warszawie (~$2221). Klasa społeczna liczy się według PIE/EHDI i GUS; siła nabywcza według PPP Banku Światowego; majątek według rozkładu NBP.
+  </div>
+
+  <div class="card">
+    <h2>Twoje dane</h2>
+    <div class="grid">
+      <div>
+        <label>Twoja pensja brutto (zł/mies., umowa o pracę)</label>
+        <input type="number" id="brutto1" value="" placeholder="np. 8000" min="0" step="500">
+      </div>
+      <div>
+        <label>Pensja żony/partnera brutto (zł/mies.)</label>
+        <input type="number" id="brutto2" value="" placeholder="0 jeśli brak" min="0" step="500">
+      </div>
+      <div>
+        <label>Liczba osób w gospodarstwie domowym (łącznie)</label>
+        <input type="number" id="hhSize" value="2" min="1" max="12" step="1">
+      </div>
+      <div>
+        <label>W tym dzieci (do 18 lat)</label>
+        <input type="number" id="children" value="0" min="0" max="10" step="1">
+      </div>
+    </div>
+    <div class="checkbox-row">
+      <input type="checkbox" id="incl800" checked>
+      <label for="incl800" style="margin:0; color: var(--text);">Doliczaj 800+ (800 zł/mies. na każde dziecko)</label>
+    </div>
+    <div class="checkbox-row">
+      <input type="checkbox" id="jointTax" checked>
+      <label for="jointTax" style="margin:0; color: var(--text);">Wspólne rozliczenie PIT małżonków</label>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Majątek (opcjonalnie — odróżnia klasę dochodową od majątkowej)</h2>
+    <div class="grid">
+      <div>
+        <label>Wartość rynkowa nieruchomości (zł, wszystkie)</label>
+        <input type="number" id="realEstate" value="0" min="0" step="50000">
+      </div>
+      <div>
+        <label>Oszczędności i inwestycje (zł: lokaty, akcje, IKE/PPK...)</label>
+        <input type="number" id="financial" value="0" min="0" step="10000">
+      </div>
+      <div>
+        <label>Suma kredytów do spłaty (zł, pozostały kapitał)</label>
+        <input type="number" id="loans" value="0" min="0" step="10000">
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Wynik: klasa dochodowa (metoda PIE / EHDI)</h2>
+    <div class="result-class" id="className">—</div>
+    <div class="result-sub" id="classDetail">—</div>
+    <div class="bar-wrap" id="classBar">
+      <div class="bar-seg" style="background:#b45309; width:20%;">niższa</div>
+      <div class="bar-seg" style="background:#a16207; width:13%;">niższa-średnia</div>
+      <div class="bar-seg" style="background:#4d7c0f; width:20%;">średnia</div>
+      <div class="bar-seg" style="background:#15803d; width:20%;">wyższa-średnia</div>
+      <div class="bar-seg" style="background:#6d28d9; width:27%;">wyższa</div>
+      <div class="bar-marker" id="marker" style="left:50%;"></div>
+    </div>
+    <div class="bar-labels"><span>0%</span><span>67%</span><span>100%</span><span>150%</span><span>200% mediany</span><span>300%+</span></div>
+    <div class="stats">
+      <div class="stat"><div class="v" id="stNetto">—</div><div class="l">dochód netto gospodarstwa /mies. (2 pensje netto + świadczenia)</div></div>
+      <div class="stat"><div class="v" id="stEhdi">—</div><div class="l">EHDI: dochód ekwiwalentny na osobę (dochód &divide; &radic;liczba osób)</div></div>
+      <div class="stat"><div class="v" id="stPctMedian">—</div><div class="l">% mediany krajowej EHDI (100% = środek rozkładu w Polsce)</div></div>
+      <div class="stat"><div class="v" id="stPercentile">—</div><div class="l">szacowany percentyl w Polsce (zarabiasz więcej niż X% gospodarstw)*</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Siła nabywcza (parytet PPP)</h2>
+    <div class="stats" style="margin-top:0;">
+      <div class="stat"><div class="v" id="stPPP">—</div><div class="l">EHDI w dolarach międzynarodowych (PPP) — porównywalne globalnie</div></div>
+      <div class="stat"><div class="v" id="stVsWarsaw">—</div><div class="l">Twoje gospodarstwo vs 2&times; przeciętna pensja netto w Warszawie</div></div>
+    </div>
+    <div style="margin-top:16px;">
+      <div class="compare-row"><span class="name">Twoje EHDI (PPP $)</span><div class="track"><div class="fill" id="cmpYou" style="background:var(--accent); width:0%"></div></div><span class="val" id="cmpYouV">—</span></div>
+      <div class="compare-row"><span class="name">Mediana Polska (PPP $)</span><div class="track"><div class="fill" id="cmpPL" style="background:var(--muted); width:0%"></div></div><span class="val" id="cmpPLV">—</span></div>
+      <div class="compare-row"><span class="name">Próg klasy wyższej PIE (PPP $)</span><div class="track"><div class="fill" id="cmpUp" style="background:var(--purple); width:0%"></div></div><span class="val" id="cmpUpV">—</span></div>
+    </div>
+    <div class="footnote">PPP (purchasing power parity) usuwa różnice cen między krajami: 1$ międzynarodowy kupuje w Polsce tyle, co 1$ w USA. Przelicznik dla Polski: <span id="pppNote">2,03</span> zł = 1$ PPP (Bank Światowy, 2025).</div>
+  </div>
+
+  <div class="card" id="wealthCard" style="display:none;">
+    <h2>Wynik: klasa majątkowa</h2>
+    <div class="result-class" id="wealthName">—</div>
+    <div class="result-sub" id="wealthDetail">—</div>
+    <div class="stats" style="margin-top:0;">
+      <div class="stat"><div class="v" id="stNetWorth">—</div><div class="l">majątek netto gospodarstwa (nieruchomości + oszczędności &minus; kredyty)</div></div>
+      <div class="stat"><div class="v" id="stWealthPct">—</div><div class="l">szacowany percentyl majątku wśród gospodarstw w Polsce*</div></div>
+      <div class="stat"><div class="v" id="stYearsOfIncome">—</div><div class="l">majątek netto wyrażony w latach Waszego dochodu netto</div></div>
+    </div>
+    <div class="footnote" id="verdict" style="font-size:12.5px; color:var(--text); margin-top:14px;"></div>
+    <div class="footnote">*Progi rozkładu majątku: badanie NBP/GUS "Zasobność gospodarstw domowych" 2016 (mediana 264 tys. zł, top 10% od 847 tys. zł, top 1% od 2,8 mln zł), zindeksowane &times;2 do cen 2025 (wzrost cen mieszkań i płac ~100% przez dekadę). Szacunek orientacyjny.</div>
+  </div>
+
+  <details>
+    <summary>Założenia i dane referencyjne (możesz edytować)</summary>
+    <div class="card" style="margin-top:8px;">
+      <div class="assumption-grid">
+        <label>Mediana EHDI w Polsce (zł netto/mies. na osobę ekwiwalentną)</label>
+        <input type="number" id="refMedian" value="3500" step="50">
+        <label>Przelicznik PPP (zł za 1$ międzynarodowy)</label>
+        <input type="number" id="refPPP" value="2.03" step="0.01">
+        <label>Przeciętna pensja netto w Warszawie (zł/mies., DB 2026: $2221 &times; 3,63)</label>
+        <input type="number" id="refWarsawNet" value="8060" step="100">
+        <label>Rozproszenie rozkładu dochodów (sigma log-normal; Gini PL &asymp; 0,27)</label>
+        <input type="number" id="refSigma" value="0.49" step="0.01">
+      </div>
+      <div class="footnote">
+        Progi klas wg Polskiego Instytutu Ekonomicznego: klasa niższa &lt;67% mediany EHDI, średnia 67–200%, wyższa &gt;200%.
+        Podpodział klasy średniej (67–100 / 100–150 / 150–200%) — umowny, dla czytelności.
+        Brutto&rarr;netto: umowa o pracę 2026 — składki emerytalno-rentowe 11,26% z rocznym limitem 30-krotności (282 600 zł w 2026), chorobowa 2,45% i zdrowotna 9% bez limitu, PIT 12%/32% (kwota wolna 30 000 zł/rok, koszty 250 zł/mies., opcjonalnie wspólne rozliczenie małżonków), danina solidarnościowa 4% powyżej 1 mln zł dochodu; bez PPK i ulg (np. ulgi na dzieci).
+        Percentyl — przybliżenie rozkładem log-normalnym dopasowanym do mediany i wsp. Giniego; rozkład ten zaniża grubość górnego ogona dochodów, więc powyżej ~300% mediany pokazujemy tylko "top &lt;1%" — realnie może to być top 0,3–1%.
+      </div>
+    </div>
+  </details>
+
+  <div class="card sources">
+    <strong>Źródła:</strong><br>
+    &bull; Mediana/przeciętny dochód rozporządzalny: <a href="https://stat.gov.pl/sygnalne/komunikaty-i-obwieszczenia/lista-komunikatow-i-obwieszczen/obwieszczenie-w-sprawie-przecietnego-miesiecznego-dochodu-rozporzadzalnego-na-1-osobe-ogolem-w-2025-r-,294,12.html">GUS, obwieszczenie 30.03.2026</a> (3500,21 zł/os. w 2025)<br>
+    &bull; Progi klas i metoda EHDI: <a href="https://pie.net.pl">Polski Instytut Ekonomiczny</a> (klasa średnia = 67–200% mediany EHDI)<br>
+    &bull; Przelicznik PPP: <a href="https://databank.worldbank.org/metadataglossary/world-development-indicators/series/PA.NUS.PPP">Bank Światowy, PA.NUS.PPP</a> (Polska 2025: 2,03)<br>
+    &bull; Pensja netto Warszawa: <a href="https://www.dbresearch.com/PROD/IE-PROD/PROD0000000000633223.pdf">Deutsche Bank "Mapping the World's Prices" 2026</a> ($2221/mies.)<br>
+    &bull; Rozkład majątku netto: <a href="https://nbp.pl/publikacje/cykliczne-materialy-analityczne-nbp/badanie-zasobnosci-gospodarstw-domowych/">NBP/GUS, Badanie Zasobności Gospodarstw Domowych 2016</a> (indeksacja do 2025 własna)
+  </div>
+</div>
+
+<script>
+const ZUS_CAP_2026 = 282600; // roczny limit 30-krotnosci podstawy skladek emerytalno-rentowych
+
+// Rozbicie rocznych obciazen jednej osoby (umowa o prace, 2026).
+// Skladki emerytalno-rentowe (11,26%) sa ograniczone limitem 30-krotnosci;
+// chorobowa (2,45%) i zdrowotna (9%) - bez limitu.
+function personParts(bruttoMonthly) {
+  const annual = bruttoMonthly * 12;
+  if (annual <= 0) return { annual: 0, social: 0, health: 0, taxBase: 0 };
+  const social = Math.min(annual, ZUS_CAP_2026) * 0.1126 + annual * 0.0245;
+  const afterSocial = annual - social;
+  const health = afterSocial * 0.09;
+  const taxBase = Math.max(0, Math.round(afterSocial - 250 * 12));
+  return { annual, social, health, taxBase };
+}
+
+function taxScale(base) {
+  if (base <= 0) return 0;
+  if (base <= 120000) return Math.max(0, base * 0.12 - 3600);
+  return 120000 * 0.12 - 3600 + (base - 120000) * 0.32;
+}
+
+// danina solidarnosciowa: 4% od nadwyzki dochodu ponad 1 mln zl (liczona indywidualnie)
+function solidarity(taxBase) {
+  return Math.max(0, taxBase - 1000000) * 0.04;
+}
+
+function householdNetMonthly(b1, b2, joint) {
+  const p1 = personParts(b1), p2 = personParts(b2);
+  let pit;
+  if (joint && b1 > 0 && b2 >= 0) {
+    pit = 2 * taxScale((p1.taxBase + p2.taxBase) / 2);
+  } else {
+    pit = taxScale(p1.taxBase) + taxScale(p2.taxBase);
+  }
+  const gross = p1.annual + p2.annual;
+  const burdens = p1.social + p2.social + p1.health + p2.health + pit
+    + solidarity(p1.taxBase) + solidarity(p2.taxBase);
+  return (gross - burdens) / 12;
+}
+
+// standard normal CDF (Abramowitz-Stegun approximation)
+function normCdf(x) {
+  const t = 1 / (1 + 0.2316419 * Math.abs(x));
+  const d = 0.3989423 * Math.exp(-x * x / 2);
+  let p = d * t * (0.3193815 + t * (-0.3565638 + t * (1.781478 + t * (-1.821256 + t * 1.330274))));
+  return x > 0 ? 1 - p : p;
+}
+
+const fmt = (v, dec = 0) => v.toLocaleString('pl-PL', { maximumFractionDigits: dec, minimumFractionDigits: dec });
+
+// Kotwice rozkladu majatku netto gospodarstw (PLN, NBP BZGD 2016 zindeksowane x2 do 2025)
+const WEALTH_ANCHORS = [
+  [4, 0], [10, 16000], [30, 285000], [50, 530000],
+  [70, 895000], [90, 1700000], [95, 2600000], [99, 5600000], [99.9, 23000000]
+];
+
+function wealthPercentile(w) {
+  if (w <= 0) return w < 0 ? 2 : 4;
+  const a = WEALTH_ANCHORS;
+  if (w >= a[a.length - 1][1]) return 99.9;
+  for (let i = 1; i < a.length; i++) {
+    if (w <= a[i][1]) {
+      const [p0, w0] = a[i - 1], [p1, w1] = a[i];
+      if (w0 <= 0) return p0 + (p1 - p0) * (w / w1);
+      // log-linear interpolation between anchors
+      return p0 + (p1 - p0) * (Math.log(w / w0) / Math.log(w1 / w0));
+    }
+  }
+  return 99.9;
+}
+
+function classifyWealth(pctl, w) {
+  if (w < 0)      return { name: 'Ujemny majątek netto', color: 'var(--red)' };
+  if (pctl >= 99) return { name: 'Klasa wyższa majątkowa (top 1%)', color: 'var(--purple)' };
+  if (pctl >= 90) return { name: 'Zamożni (top 10%)', color: 'var(--green)' };
+  if (pctl >= 75) return { name: 'Górna klasa średnia majątkowa (top 25%)', color: 'var(--green)' };
+  if (pctl >= 50) return { name: 'Powyżej mediany majątku', color: 'var(--yellow)' };
+  return { name: 'Poniżej mediany majątku', color: 'var(--orange)' };
+}
+
+function classify(pct) {
+  if (pct < 67)  return { name: 'Klasa niższa', color: 'var(--orange)' };
+  if (pct < 100) return { name: 'Klasa niższa-średnia', color: 'var(--yellow)' };
+  if (pct < 150) return { name: 'Klasa średnia', color: 'var(--green)' };
+  if (pct < 200) return { name: 'Klasa wyższa-średnia', color: 'var(--green)' };
+  return { name: 'Klasa wyższa', color: 'var(--purple)' };
+}
+
+function calc() {
+  const b1 = +document.getElementById('brutto1').value || 0;
+  const b2 = +document.getElementById('brutto2').value || 0;
+  const hh = Math.max(1, +document.getElementById('hhSize').value || 1);
+  const kids = Math.min(+document.getElementById('children').value || 0, hh - 1);
+  const incl800 = document.getElementById('incl800').checked;
+  const median = +document.getElementById('refMedian').value || 3500;
+  const ppp = +document.getElementById('refPPP').value || 2.03;
+  const warsawNet = +document.getElementById('refWarsawNet').value || 8060;
+  const sigma = +document.getElementById('refSigma').value || 0.49;
+
+  const joint = document.getElementById('jointTax').checked;
+
+  const netto = householdNetMonthly(b1, b2, joint) + (incl800 ? kids * 800 : 0);
+  const ehdi = netto / Math.sqrt(hh);
+  const pctMedian = ehdi / median * 100;
+  const cls = classify(pctMedian);
+  const percentile = ehdi > 0 ? normCdf(Math.log(ehdi / median) / sigma) * 100 : 0;
+  const ehdiPPP = ehdi / ppp;
+  const medianPPP = median / ppp;
+  const upperPPP = median * 2 / ppp;
+  const vsWarsaw = netto / (2 * warsawNet) * 100;
+
+  document.getElementById('className').textContent = cls.name;
+  document.getElementById('className').style.color = cls.color;
+  document.getElementById('classDetail').textContent =
+    `EHDI = ${fmt(ehdi)} zł/mies. na osobę ekwiwalentną, czyli ${fmt(pctMedian)}% mediany krajowej`;
+  // bar: 0-300% of median mapped to 0-100% width (segments: 67,100,150,200,300)
+  const pos = Math.min(300, pctMedian) / 300 * 100;
+  document.getElementById('marker').style.left = pos + '%';
+
+  document.getElementById('stNetto').textContent = fmt(netto) + ' zł';
+  document.getElementById('stEhdi').textContent = fmt(ehdi) + ' zł';
+  document.getElementById('stPctMedian').textContent = fmt(pctMedian) + '%';
+  const topPct = 100 - percentile;
+  document.getElementById('stPercentile').textContent = topPct < 1 ? 'top <1%' : 'top ' + fmt(topPct, 1) + '%';
+  document.getElementById('stPPP').textContent = '$' + fmt(ehdiPPP) + ' PPP';
+  document.getElementById('stVsWarsaw').textContent = fmt(vsWarsaw) + '%';
+  document.getElementById('pppNote').textContent = fmt(ppp, 2);
+
+  // --- majatek ---
+  const re = +document.getElementById('realEstate').value || 0;
+  const fin = +document.getElementById('financial').value || 0;
+  const loans = +document.getElementById('loans').value || 0;
+  const anyWealth = re > 0 || fin > 0 || loans > 0;
+  document.getElementById('wealthCard').style.display = anyWealth ? '' : 'none';
+  if (anyWealth) {
+    const nw = re + fin - loans;
+    const wp = wealthPercentile(nw);
+    const wcls = classifyWealth(wp, nw);
+    document.getElementById('wealthName').textContent = wcls.name;
+    document.getElementById('wealthName').style.color = wcls.color;
+    document.getElementById('wealthDetail').textContent =
+      `Majątek netto ${fmt(nw)} zł vs mediana gospodarstw ~530 tys. zł`;
+    document.getElementById('stNetWorth').textContent = fmt(nw) + ' zł';
+    document.getElementById('stWealthPct').textContent = wp >= 99 ? 'top <1%' : 'top ' + fmt(100 - wp) + '%';
+    document.getElementById('stYearsOfIncome').textContent = netto > 0 ? fmt(nw / (netto * 12), 1) + ' lat' : '—';
+
+    const highIncome = pctMedian >= 200;
+    const highWealth = wp >= 90;
+    let verdict;
+    if (highIncome && highWealth) {
+      verdict = 'Werdykt łączny: klasa wyższa zarówno dochodowo, jak i majątkowo.';
+    } else if (highIncome && !highWealth) {
+      verdict = 'Werdykt łączny: wysokie dochody, ale majątek jeszcze nie w top 10% — profil "HENRY" (high earner, not rich yet). Potocznie: górna klasa średnia na dorobku, nie klasa wyższa.';
+    } else if (!highIncome && highWealth) {
+      verdict = 'Werdykt łączny: majątek klasy wyższej przy umiarkowanych dochodach bieżących — profil rentierski.';
+    } else {
+      verdict = 'Werdykt łączny: dochody i majątek w okolicach klasy średniej.';
+    }
+    document.getElementById('verdict').textContent = verdict;
+  }
+
+  const maxCmp = Math.max(ehdiPPP, medianPPP, upperPPP) * 1.1;
+  document.getElementById('cmpYou').style.width = (ehdiPPP / maxCmp * 100) + '%';
+  document.getElementById('cmpPL').style.width = (medianPPP / maxCmp * 100) + '%';
+  document.getElementById('cmpUp').style.width = (upperPPP / maxCmp * 100) + '%';
+  document.getElementById('cmpYouV').textContent = '$' + fmt(ehdiPPP);
+  document.getElementById('cmpPLV').textContent = '$' + fmt(medianPPP);
+  document.getElementById('cmpUpV').textContent = '$' + fmt(upperPPP);
+}
+
+document.querySelectorAll('input').forEach(el => el.addEventListener('input', calc));
+calc();
+</script>
+</body>
+</html>
