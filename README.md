@@ -2,7 +2,7 @@
 
 Sprawdź swoją **pozycję dochodową**, **siłę nabywczą** i **majątek netto** na tle polskich gospodarstw — w minutę, bez konta i bez wysyłania danych.
 
-**Live:** https://kris-welc.github.io/kalkulator-klasy-spolecznej/
+**Live:** https://kris-welc.github.io/finansowy-kompas/
 
 ## Co robi
 

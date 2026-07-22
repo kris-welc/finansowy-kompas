@@ -172,7 +172,7 @@
         </div>
       </div>
       <div class="hero-actions">
-        <a class="star-pill" href="https://github.com/kris-welc/kalkulator-klasy-spolecznej" target="_blank" rel="noopener">
+        <a class="star-pill" href="https://github.com/kris-welc/finansowy-kompas" target="_blank" rel="noopener">
           ★ Dodaj gwiazdkę
           <span id="starCountWrap" hidden> · <span class="count" id="starCount">0</span></span>
         </a>
@@ -330,7 +330,7 @@
     • NBP/GUS BZGD 2016 — rozkład majątku (indeksacja własna)
   </div>
 
-  <p class="footer-note">Finansowy Kompas · open source na <a href="https://github.com/kris-welc/kalkulator-klasy-spolecznej">GitHub</a></p>
+  <p class="footer-note">Finansowy Kompas · open source na <a href="https://github.com/kris-welc/finansowy-kompas">GitHub</a></p>
 </div>
 
 <script>
@@ -510,7 +510,7 @@ calc();
 
 /* --- UI only: rating stars (does not touch calculation logic) --- */
 (function () {
-  const REPO = 'https://github.com/kris-welc/kalkulator-klasy-spolecznej';
+  const REPO = 'https://github.com/kris-welc/finansowy-kompas';
   const STAR_URL = REPO;
   const stars = document.querySelectorAll('#ratingStars button');
   const thank = document.getElementById('ratingThanks');
@@ -545,7 +545,7 @@ calc();
 
   // Optional public star count only (no user data sent)
   if (countEl) {
-    fetch('https://api.github.com/repos/kris-welc/kalkulator-klasy-spolecznej')
+    fetch('https://api.github.com/repos/kris-welc/finansowy-kompas')
       .then(r => r.ok ? r.json() : null)
       .then(d => {
         if (d && typeof d.stargazers_count === 'number') {
